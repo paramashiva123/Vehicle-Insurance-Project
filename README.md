@@ -105,11 +105,4 @@ pyproject.toml                # Build system configuration
 3. Build and run the Docker container
 4. Access the FastAPI application for training and predictions
 
-## 📈 Future Enhancements
-
-- Integration with MLflow for experiment tracking
-- CI/CD pipeline for automated testing and deployment
-- Monitoring dashboard for model performance
-- Feature store implementation
-
 This project demonstrates a production-grade ML pipeline following best practices for maintainability, scalability, and reliability in cloud environments.
