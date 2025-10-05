@@ -1,4 +1,4 @@
-# 🚗 Vehicle Insurance Cross-Sell Prediction: An End-to-End MLOps Project
+# 🚗 Health Insurance Cross-Sell Prediction 🏥
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue.svg)
 ![Framework](https://img.shields.io/badge/Framework-FastAPI-green.svg)
@@ -7,11 +7,22 @@
 ![Database](https://img.shields.io/badge/Database-MongoDB-brightgreen.svg)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
-This repository contains a complete, end-to-end MLOps project designed to predict customer interest in a cross-sell campaign. The business goal is to identify existing vehicle insurance customers who are likely to be interested in purchasing health insurance. The project showcases a full machine learning lifecycle, from initial data ingestion and model development to fully automated CI/CD deployment on the cloud.
+This repository contains a complete, end-to-end MLOps project designed to predict which existing **Health Insurance** customers will be interested in purchasing **Vehicle Insurance**. The project showcases a full machine learning lifecycle, from initial data ingestion and model development to fully automated CI/CD deployment on the cloud.
 
-The core of this project is an automated pipeline that trains a classification model, evaluates its performance against a production model, and deploys it as a live API endpoint for real-time predictions.
+---
 
+## 📖 About the Project & Dataset
 
+### Business Context
+The client for this project is an insurance company that has provided Health Insurance to its customers. They need a model to predict whether these existing policyholders will also be interested in Vehicle Insurance offered by the company.
+
+Building such a model is extremely valuable because it allows the company to plan its communication strategy effectively. By reaching out specifically to customers who are likely to be interested, the company can optimize its business model and increase revenue.
+
+### Dataset Information
+To predict a customer's interest in Vehicle Insurance, the model uses a dataset containing various customer attributes:
+* **Demographics**: Gender, Age, Region Code.
+* **Vehicle Details**: Vehicle Age, whether the vehicle has existing Damage.
+* **Policy Information**: The annual premium paid for Health Insurance, the sourcing channel, etc.
 
 ---
 
@@ -24,33 +35,33 @@ This project is built with a focus on automation, scalability, and best practice
     * Each step is encapsulated in its own class (e.g., `DataIngestion`, `DataValidation`) for maintainability.
 
 * **CI/CD Automation**:
-    * [cite_start]A full CI/CD workflow is configured using **GitHub Actions** (`.github/workflows/aws.yaml`)[cite: 21].
-    * [cite_start]Every `git push` to the main branch triggers the workflow, which automatically builds a **Docker** image, pushes it to **AWS Elastic Container Registry (ECR)**, and deploys the new version to an **AWS EC2** instance[cite: 21, 22, 23, 27].
-    * [cite_start]Utilizes a **self-hosted runner** configured on the EC2 instance to connect GitHub with the deployment server[cite: 25].
+    * A full CI/CD workflow is configured using **GitHub Actions** (`.github/workflows/aws.yaml`).
+    * Every `git push` to the main branch triggers the workflow, which automatically builds a **Docker** image, pushes it to **AWS Elastic Container Registry (ECR)**, and deploys the new version to an **AWS EC2** instance.
+    * Utilizes a **self-hosted runner** configured on the EC2 instance to connect GitHub with the deployment server.
 
 * **Cloud Integration & Model Registry**:
-    * [cite_start]Leverages **AWS S3** as a robust model registry to store the production-ready model artifact[cite: 16, 17].
+    * Leverages **AWS S3** as a robust model registry to store the production-ready model artifact.
     * This setup allows for seamless versioning and retrieval of the best-performing model for inference and evaluation.
 
 * **Interactive Web Application & API**:
-    * [cite_start]A user-friendly web interface built with **FastAPI** and **Jinja2** templates allows for real-time predictions by submitting a form[cite: 1].
+    * A user-friendly web interface built with **FastAPI** and **Jinja2** templates allows for real-time predictions by submitting a form.
     * Provides two main endpoints in `app.py`:
-        * [cite_start]`POST /`: Accepts customer data from the web form and returns a prediction ("Response-Yes" or "Response-No")[cite: 1].
-        * [cite_start]`GET /train`: Triggers the entire machine learning training pipeline on demand[cite: 1].
+        * `POST /`: Accepts customer data from the web form and returns a prediction on their interest in **Vehicle Insurance**.
+        * `GET /train`: Triggers the entire machine learning training pipeline on demand.
 
 * **Champion-Challenger Model Evaluation**:
-    * [cite_start]The pipeline implements a "Champion-Challenger" strategy where the newly trained model (challenger) is rigorously compared against the current production model (champion) from S3[cite: 7].
-    * The comparison is based on **F1-score**. [cite_start]The new model is promoted to production only if its score is higher, ensuring continuous performance improvement[cite: 7].
+    * The pipeline implements a "Champion-Challenger" strategy where the newly trained model (challenger) is rigorously compared against the current production model (champion) from S3.
+    * The comparison is based on **F1-score**. The new model is promoted to production only if its score is higher, ensuring continuous performance improvement.
 
 * **Advanced Data Preprocessing**:
-    * [cite_start]The `DataTransformation` class handles a multi-step preprocessing pipeline[cite: 2].
-    * [cite_start]**Handles Class Imbalance**: Uses the `SMOTEENN` technique to oversample the minority class and clean the majority class, creating a more balanced dataset for training[cite: 2].
-    * [cite_start]**Feature Engineering**: Maps `Gender` to binary, creates dummy variables for categorical features (`Vehicle_Age`, `Vehicle_Damage`), and renames columns for consistency[cite: 2].
-    * [cite_start]**Feature Scaling**: Applies `StandardScaler` to numerical columns and `MinMaxScaler` to select features using a `ColumnTransformer` for robust preprocessing[cite: 2].
+    * The `DataTransformation` class handles a multi-step preprocessing pipeline.
+    * **Handles Class Imbalance**: Uses the `SMOTEENN` technique to oversample the minority class and clean the majority class, creating a more balanced dataset for training.
+    * **Feature Engineering**: Maps `Gender` to binary, creates dummy variables for categorical features (`Vehicle_Age`, `Vehicle_Damage`), and renames columns for consistency.
+    * **Feature Scaling**: Applies `StandardScaler` to numerical columns and `MinMaxScaler` to select features using a `ColumnTransformer` for robust preprocessing.
 
 * **Scalable Data Storage**:
-    * [cite_start]Uses **MongoDB Atlas**, a cloud-native NoSQL database, as the primary data source[cite: 5].
-    * [cite_start]The `data_ingestion` component fetches data directly from the MongoDB collection, making the pipeline scalable to large datasets[cite: 3, 6].
+    * Uses **MongoDB Atlas**, a cloud-native NoSQL database, as the primary data source.
+    * The `data_ingestion` component fetches data directly from the MongoDB collection, making the pipeline scalable to large datasets.
 
 ---
 
@@ -72,14 +83,14 @@ This project is built with a focus on automation, scalability, and best practice
 
 The project is architected as a series of sequential, automated steps that form the complete MLOps lifecycle.
 
-1.  [cite_start]**Data Ingestion**: The `DataIngestion` class connects to MongoDB using the `Proj1Data` utility, exports the collection as a DataFrame, and splits it into training and testing CSV files[cite: 3].
-2.  **Data Validation**: The `DataValidation` class reads the train/test CSVs and validates them against a predefined schema (`config/schema.yaml`). [cite_start]It checks for the correct number of columns and the presence of all required features, ensuring data integrity before processing[cite: 4, 10].
-3.  **Data Transformation**: The `DataTransformation` class applies all preprocessing steps. It uses a `ColumnTransformer` pipeline to apply different scaling methods to different columns and handles class imbalance with `SMOTEENN`. [cite_start]The final preprocessor object is saved for later use in prediction[cite: 2].
-4.  **Model Training**: The `ModelTrainer` class trains a `RandomForestClassifier` on the transformed data. [cite_start]It saves the final model object, which is a custom class that bundles the preprocessing pipeline and the trained model together (`src/entity/estimator.py`)[cite: 5, 12].
-5.  **Model Evaluation**: The `ModelEvaluation` class fetches the current production model from AWS S3. It then uses the test dataset to compare the F1-score of the newly trained model against the production model. [cite_start]The result determines if the new model is accepted[cite: 7].
-6.  [cite_start]**Model Pusher**: If the new model is accepted, the `ModelPusher` class uploads the new model artifact to the designated AWS S3 bucket, replacing the old production model[cite: 6].
-7.  **CI/CD Deployment**: When changes are pushed to GitHub, the workflow defined in `.github/workflows/aws.yaml` is triggered. [cite_start]It builds the Docker image, pushes it to AWS ECR, and the self-hosted runner on the EC2 instance pulls this new image and restarts the container, deploying the updated application without manual intervention[cite: 21, 25, 26, 27].
-8.  **Prediction Service**: The running Docker container serves the `app.py` FastAPI application. Users can interact with the web UI to get predictions, or developers can integrate with the API endpoints.
+1.  **Data Ingestion**: The `DataIngestion` class connects to MongoDB, exports the collection as a DataFrame, and splits it into training and testing CSV files.
+2.  **Data Validation**: The `DataValidation` class reads the train/test CSVs and validates them against a predefined schema (`config/schema.yaml`), ensuring data integrity.
+3.  **Data Transformation**: The `DataTransformation` class applies all preprocessing steps, including scaling, encoding, and handling class imbalance with `SMOTEENN`.
+4.  **Model Training**: The `ModelTrainer` class trains a `RandomForestClassifier` on the transformed data and bundles the preprocessor and model into a single artifact.
+5.  **Model Evaluation**: The `ModelEvaluation` class fetches the current production model from AWS S3 and compares its F1-score against the newly trained model on the test set.
+6.  **Model Pusher**: If the new model is accepted, the `ModelPusher` class uploads the new model artifact to the AWS S3 bucket, making it the new production model.
+7.  **CI/CD Deployment**: When changes are pushed to GitHub, the workflow builds the Docker image, pushes it to AWS ECR, and the self-hosted runner on EC2 deploys the new container.
+8.  **Prediction Service**: The running Docker container serves the FastAPI application, allowing users to get real-time predictions on whether a customer is interested in Vehicle Insurance.
 
 ---
 
@@ -114,7 +125,7 @@ To set up and run this project on your local machine, follow these instructions.
     ```
 
 4.  **Set Up Environment Variables:**
-    [cite_start]You must set the following environment variables for the application to connect to external services[cite: 8, 9, 14, 15].
+    You must set the following environment variables for the application to connect to external services.
     ```bash
     export MONGODB_URL="<your_mongodb_atlas_connection_string>"
     export AWS_ACCESS_KEY_ID="<your_aws_access_key>"
